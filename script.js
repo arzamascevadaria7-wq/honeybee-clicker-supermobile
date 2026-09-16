@@ -246,78 +246,136 @@ function getCurrentFireworkGoal() {
 }
 
 function checkFireworkMilestone(pointsToAdd) {
-let currentGoal = getCurrentFireworkGoal();
-let previousScore = cumulativeClickScore;
-cumulativeClickScore += pointsToAdd;if (Math.floor(cumulativeClickScore / currentGoal) > Math.floor(previousScore / currentGoal)) {
-const rect = beeButton.getBoundingClientRect();
-triggerHoneyFireworks(rect.left + rect.width / 2, rect.top + rect.height / 2);
-}let currentMilestoneLevel = Math.floor(honey / 50000);
-if (currentMilestoneLevel > lastMilestoneReached) {
-lastMilestoneReached = currentMilestoneLevel;
-triggerHoneyRainEvent();
+    let currentGoal = getCurrentFireworkGoal();
+    let previousScore = cumulativeClickScore;
+    cumulativeClickScore += pointsToAdd;
+    
+    if (Math.floor(cumulativeClickScore / currentGoal) > Math.floor(previousScore / currentGoal)) {
+        const rect = beeButton.getBoundingClientRect();
+        triggerHoneyFireworks(rect.left + rect.width / 2, rect.top + rect.height / 2);
+    }
+    
+    let currentMilestoneLevel = Math.floor(honey / 50000);
+    if (currentMilestoneLevel > lastMilestoneReached) {
+        lastMilestoneReached = currentMilestoneLevel;
+        triggerHoneyRainEvent();
+    }
 }
-}function updateUI() {
-honeyCountEl.innerText = Math.floor(honey);
-hpsCountEl.innerText = isGamePaused ? 0 : droneCount * 20;clickPowerCostEl.innerText = clickPowerCost;
-royalJellyCostEl.innerText = royalJellyCost;
-droneCostEl.innerText = droneCost;buyClickPowerBtn.disabled = isGamePaused || honey < clickPowerCost;
-buyRoyalJellyBtn.disabled = isGamePaused || honey < royalJellyCost;
-buyDroneBtn.disabled = isGamePaused || honey < droneCost;let currentGoal = getCurrentFireworkGoal();
-let remaining = currentGoal - (cumulativeClickScore % currentGoal);
-milestoneCounterEl.innerText = 'Next Honey Fireworks in: ' + remaining.toLocaleString() + ' points';
-}// FIXED: Correct touch point array index extraction [0] to stop Safari from crashing
+
+function updateUI() {
+    honeyCountEl.innerText = Math.floor(honey);
+    hpsCountEl.innerText = isGamePaused ? 0 : droneCount * 20;
+    clickPowerCostEl.innerText = clickPowerCost;
+    royalJellyCostEl.innerText = royalJellyCost;
+    droneCostEl.innerText = droneCost;
+    buyClickPowerBtn.disabled = isGamePaused || honey < clickPowerCost;
+    buyRoyalJellyBtn.disabled = isGamePaused || honey < royalJellyCost;
+    buyDroneBtn.disabled = isGamePaused || honey < droneCost;
+    let currentGoal = getCurrentFireworkGoal();
+    let remaining = currentGoal - (cumulativeClickScore % currentGoal);
+    milestoneCounterEl.innerText = 'Next Honey Fireworks in: ' + remaining.toLocaleString() + ' points';
+}
+
 function handleBeeClick(e) {
-if (isGamePaused) return;if (e.cancelable) e.preventDefault();
-initAudio();
-honey += clickPower;
-checkFireworkMilestone(clickPower);
-playClickSound();let clickX, clickY;
-if (e.changedTouches && e.changedTouches.length > 0) {
-// FIXED: Explicitly extracted coordinates from index [0] touch layer
-clickX = e.changedTouches[0].clientX;
-clickY = e.changedTouches[0].clientY;
-} else {
-clickX = e.clientX;
-clickY = e.clientY;
-}createFloatingNumber(clickX, clickY, clickPower);
-updateUI();beeButton.classList.add('active-squish');
-setTimeout(() => beeButton.classList.remove('active-squish'), 80);
-}// Attach hybrid native listening handlers
+    if (isGamePaused) return;
+    if (e.cancelable) e.preventDefault();
+    initAudio();
+    honey += clickPower;
+    checkFireworkMilestone(clickPower);
+    playClickSound();
+    
+    let clickX, clickY;
+    if (e.changedTouches && e.changedTouches.length > 0) {
+        clickX = e.changedTouches[0].clientX;
+        clickY = e.changedTouches[0].clientY;
+    } else {
+        clickX = e.clientX;
+        clickY = e.clientY;
+    }
+    
+    createFloatingNumber(clickX, clickY, clickPower);
+    updateUI();
+    beeButton.classList.add('active-squish');
+    setTimeout(() => beeButton.classList.remove('active-squish'), 80);
+}
+
+// Attach hybrid native listening handlers
 beeButton.addEventListener('touchstart', handleBeeClick, { passive: false });
 beeButton.addEventListener('mousedown', (e) => {
-if (!('ontouchstart' in window)) handleBeeClick(e);
-});buyClickPowerBtn.addEventListener('click', () => {
-if (isGamePaused || honey < clickPowerCost) return;
-honey -= clickPowerCost; clickPower += 3; clickPowerCost = Math.floor(clickPowerCost * 1.5);
-playTone(880, 'sine', 0.2, 0.1); updateUI(); saveProgress();
-});buyRoyalJellyBtn.addEventListener('click', () => {
-if (isGamePaused || honey < royalJellyCost) return;
-honey -= royalJellyCost; clickPower += 10; royalJellyCost = Math.floor(royalJellyCost * 1.65);
-playTone(1174.66, 'sine', 0.22, 0.12); updateUI(); saveProgress();
-});buyDroneBtn.addEventListener('click', () => {
-if (isGamePaused || honey < droneCost) return;
-honey -= droneCost; droneCount += 1; droneCost = Math.floor(droneCost * 1.6);
-playTone(987.77, 'sine', 0.25, 0.1); updateUI(); saveProgress();
-});togglePauseBtn.addEventListener('click', () => {
-isGamePaused = !isGamePaused;
-togglePauseBtn.innerText = isGamePaused ? " Resume" : " Pause";
-togglePauseBtn.classList.toggle('paused-state', isGamePaused);
-skyCanvas.classList.toggle('paused', isGamePaused);
-updateUI();
-});toggleMusicBtn.addEventListener('click', () => {
-initAudio(); isMusicMuted = !isMusicMuted;
-toggleMusicBtn.innerText = isMusicMuted ? ' Music' : ' Music';
-toggleMusicBtn.classList.toggle('muted', isMusicMuted);
-});toggleSfxBtn.addEventListener('click', () => {
-initAudio(); isSfxMuted = !isSfxMuted;
-toggleSfxBtn.innerText = isSfxMuted ? ' SFX' : ' SFX';
-toggleSfxBtn.classList.toggle('muted', isSfxMuted);
-});clearSaveBtn.addEventListener('click', () => {
-if(confirm("Reset all game data?")) { localStorage.removeItem('honeybee_clicker_save'); window.location.reload(); }
-});setInterval(() => {
-if (droneCount > 0 && !isGamePaused) {
-let passiveGain = (droneCount * 20) / 10;
-honey += passiveGain; checkFireworkMilestone(passiveGain); updateUI();
-}
-}, 100);setInterval(() => { if (!isGamePaused) saveProgress(); }, 10000);loadProgress();
+    if (!('ontouchstart' in window)) handleBeeClick(e);
+});
+
+buyClickPowerBtn.addEventListener('click', () => {
+    if (isGamePaused || honey < clickPowerCost) return;
+    honey -= clickPowerCost;
+    clickPower += 3;
+    clickPowerCost = Math.floor(clickPowerCost * 1.5);
+    playTone(880, 'sine', 0.2, 0.1);
+    updateUI();
+    saveProgress();
+});
+
+buyRoyalJellyBtn.addEventListener('click', () => {
+    if (isGamePaused || honey < royalJellyCost) return;
+    honey -= royalJellyCost;
+    clickPower += 10;
+    royalJellyCost = Math.floor(royalJellyCost * 1.65);
+    playTone(1174.66, 'sine', 0.22, 0.12);
+    updateUI();
+    saveProgress();
+});
+
+buyDroneBtn.addEventListener('click', () => {
+    if (isGamePaused || honey < droneCost) return;
+    honey -= droneCost;
+    droneCount += 1;
+    droneCost = Math.floor(droneCost * 1.6);
+    playTone(987.77, 'sine', 0.25, 0.1);
+    updateUI();
+    saveProgress();
+});
+
+togglePauseBtn.addEventListener('click', () => {
+    isGamePaused = !isGamePaused;
+    togglePauseBtn.innerText = isGamePaused ? "▶️ Resume" : "⏸️ Pause";
+    togglePauseBtn.classList.toggle('paused-state', isGamePaused);
+    skyCanvas.classList.toggle('paused', isGamePaused);
+    updateUI();
+});
+
+toggleMusicBtn.addEventListener('click', () => {
+    initAudio();
+    isMusicMuted = !isMusicMuted;
+    toggleMusicBtn.innerText = isMusicMuted ? '🔇 Music' : '🎵 Music';
+    toggleMusicBtn.classList.toggle('muted', isMusicMuted);
+});
+
+toggleSfxBtn.addEventListener('click', () => {
+    initAudio();
+    isSfxMuted = !isSfxMuted;
+    toggleSfxBtn.innerText = isSfxMuted ? '🔇 SFX' : '🔊 SFX';
+    toggleSfxBtn.classList.toggle('muted', isSfxMuted);
+});
+
+clearSaveBtn.addEventListener('click', () => {
+    if(confirm("Reset all game data?")) {
+        localStorage.removeItem('honeybee_clicker_save');
+        window.location.reload();
+    }
+});
+
+setInterval(() => {
+    if (droneCount > 0 && !isGamePaused) {
+        let passiveGain = (droneCount * 20) / 10;
+        honey += passiveGain;
+        checkFireworkMilestone(passiveGain);
+        updateUI();
+    }
+}, 100);
+
+setInterval(() => {
+    if (!isGamePaused) saveProgress();
+}, 10000);
+
+loadProgress();
 updateUI();
