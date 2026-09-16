@@ -29,26 +29,10 @@ const rainMelody = rainMelodyData.split(',').map(Number);
 const rainRootsData = "65,67,69,72";
 const rainRoots = rainRootsData.split(',').map(Number);
 
-// DOM Elements
-const honeyCountEl = document.getElementById('honey-count');
-const hpsCountEl = document.getElementById('hps-count');
-const milestoneCounterEl = document.getElementById('milestone-counter');
-const beeButton = document.getElementById('bee-button');
-const skyCanvas = document.getElementById('sky-canvas');
-const dashboardEl = document.getElementById('dashboard');
-const saveNotification = document.getElementById('save-notification');
-const clearSaveBtn = document.getElementById('clear-save-btn');
-
-const buyClickPowerBtn = document.getElementById('buy-click-power');
-const clickPowerCostEl = document.getElementById('click-power-cost');
-const buyRoyalJellyBtn = document.getElementById('buy-royal-jelly');
-const royalJellyCostEl = document.getElementById('royal-jelly-cost');
-const buyDroneBtn = document.getElementById('buy-drone');
-const droneCostEl = document.getElementById('drone-cost');
-
-const togglePauseBtn = document.getElementById('toggle-pause');
-const toggleMusicBtn = document.getElementById('toggle-music');
-const toggleSfxBtn = document.getElementById('toggle-sfx');
+// DOM Elements - declared but not initialized yet
+let honeyCountEl, hpsCountEl, milestoneCounterEl, beeButton, skyCanvas, dashboardEl, saveNotification, clearSaveBtn;
+let buyClickPowerBtn, clickPowerCostEl, buyRoyalJellyBtn, royalJellyCostEl, buyDroneBtn, droneCostEl;
+let togglePauseBtn, toggleMusicBtn, toggleSfxBtn;
 
 function saveProgress() {
     const gameState = { honey, clickPower, droneCount, cumulativeClickScore, clickPowerCost, royalJellyCost, droneCost, lastMilestoneReached };
@@ -299,83 +283,107 @@ function handleBeeClick(e) {
     setTimeout(() => beeButton.classList.remove('active-squish'), 80);
 }
 
-// Attach hybrid native listening handlers
-beeButton.addEventListener('touchstart', handleBeeClick, { passive: false });
-beeButton.addEventListener('mousedown', (e) => {
-    if (!('ontouchstart' in window)) handleBeeClick(e);
-});
+// Wait for DOM to be ready before attaching event listeners
+document.addEventListener('DOMContentLoaded', () => {
+    // Initialize DOM elements
+    honeyCountEl = document.getElementById('honey-count');
+    hpsCountEl = document.getElementById('hps-count');
+    milestoneCounterEl = document.getElementById('milestone-counter');
+    beeButton = document.getElementById('bee-button');
+    skyCanvas = document.getElementById('sky-canvas');
+    dashboardEl = document.getElementById('dashboard');
+    saveNotification = document.getElementById('save-notification');
+    clearSaveBtn = document.getElementById('clear-save-btn');
 
-buyClickPowerBtn.addEventListener('click', () => {
-    if (isGamePaused || honey < clickPowerCost) return;
-    honey -= clickPowerCost;
-    clickPower += 3;
-    clickPowerCost = Math.floor(clickPowerCost * 1.5);
-    playTone(880, 'sine', 0.2, 0.1);
-    updateUI();
-    saveProgress();
-});
+    buyClickPowerBtn = document.getElementById('buy-click-power');
+    clickPowerCostEl = document.getElementById('click-power-cost');
+    buyRoyalJellyBtn = document.getElementById('buy-royal-jelly');
+    royalJellyCostEl = document.getElementById('royal-jelly-cost');
+    buyDroneBtn = document.getElementById('buy-drone');
+    droneCostEl = document.getElementById('drone-cost');
 
-buyRoyalJellyBtn.addEventListener('click', () => {
-    if (isGamePaused || honey < royalJellyCost) return;
-    honey -= royalJellyCost;
-    clickPower += 10;
-    royalJellyCost = Math.floor(royalJellyCost * 1.65);
-    playTone(1174.66, 'sine', 0.22, 0.12);
-    updateUI();
-    saveProgress();
-});
+    togglePauseBtn = document.getElementById('toggle-pause');
+    toggleMusicBtn = document.getElementById('toggle-music');
+    toggleSfxBtn = document.getElementById('toggle-sfx');
 
-buyDroneBtn.addEventListener('click', () => {
-    if (isGamePaused || honey < droneCost) return;
-    honey -= droneCost;
-    droneCount += 1;
-    droneCost = Math.floor(droneCost * 1.6);
-    playTone(987.77, 'sine', 0.25, 0.1);
-    updateUI();
-    saveProgress();
-});
+    // Attach hybrid native listening handlers
+    beeButton.addEventListener('touchstart', handleBeeClick, { passive: false });
+    beeButton.addEventListener('mousedown', (e) => {
+        if (!('ontouchstart' in window)) handleBeeClick(e);
+    });
 
-togglePauseBtn.addEventListener('click', () => {
-    isGamePaused = !isGamePaused;
-    togglePauseBtn.innerText = isGamePaused ? "▶️ Resume" : "⏸️ Pause";
-    togglePauseBtn.classList.toggle('paused-state', isGamePaused);
-    skyCanvas.classList.toggle('paused', isGamePaused);
-    updateUI();
-});
-
-toggleMusicBtn.addEventListener('click', () => {
-    initAudio();
-    isMusicMuted = !isMusicMuted;
-    toggleMusicBtn.innerText = isMusicMuted ? '🔇 Music' : '🎵 Music';
-    toggleMusicBtn.classList.toggle('muted', isMusicMuted);
-});
-
-toggleSfxBtn.addEventListener('click', () => {
-    initAudio();
-    isSfxMuted = !isSfxMuted;
-    toggleSfxBtn.innerText = isSfxMuted ? '🔇 SFX' : '🔊 SFX';
-    toggleSfxBtn.classList.toggle('muted', isSfxMuted);
-});
-
-clearSaveBtn.addEventListener('click', () => {
-    if(confirm("Reset all game data?")) {
-        localStorage.removeItem('honeybee_clicker_save');
-        window.location.reload();
-    }
-});
-
-setInterval(() => {
-    if (droneCount > 0 && !isGamePaused) {
-        let passiveGain = (droneCount * 20) / 10;
-        honey += passiveGain;
-        checkFireworkMilestone(passiveGain);
+    buyClickPowerBtn.addEventListener('click', () => {
+        if (isGamePaused || honey < clickPowerCost) return;
+        honey -= clickPowerCost;
+        clickPower += 3;
+        clickPowerCost = Math.floor(clickPowerCost * 1.5);
+        playTone(880, 'sine', 0.2, 0.1);
         updateUI();
-    }
-}, 100);
+        saveProgress();
+    });
 
-setInterval(() => {
-    if (!isGamePaused) saveProgress();
-}, 10000);
+    buyRoyalJellyBtn.addEventListener('click', () => {
+        if (isGamePaused || honey < royalJellyCost) return;
+        honey -= royalJellyCost;
+        clickPower += 10;
+        royalJellyCost = Math.floor(royalJellyCost * 1.65);
+        playTone(1174.66, 'sine', 0.22, 0.12);
+        updateUI();
+        saveProgress();
+    });
 
-loadProgress();
-updateUI();
+    buyDroneBtn.addEventListener('click', () => {
+        if (isGamePaused || honey < droneCost) return;
+        honey -= droneCost;
+        droneCount += 1;
+        droneCost = Math.floor(droneCost * 1.6);
+        playTone(987.77, 'sine', 0.25, 0.1);
+        updateUI();
+        saveProgress();
+    });
+
+    togglePauseBtn.addEventListener('click', () => {
+        isGamePaused = !isGamePaused;
+        togglePauseBtn.innerText = isGamePaused ? "▶️ Resume" : "⏸️ Pause";
+        togglePauseBtn.classList.toggle('paused-state', isGamePaused);
+        skyCanvas.classList.toggle('paused', isGamePaused);
+        updateUI();
+    });
+
+    toggleMusicBtn.addEventListener('click', () => {
+        initAudio();
+        isMusicMuted = !isMusicMuted;
+        toggleMusicBtn.innerText = isMusicMuted ? '🔇 Music' : '🎵 Music';
+        toggleMusicBtn.classList.toggle('muted', isMusicMuted);
+    });
+
+    toggleSfxBtn.addEventListener('click', () => {
+        initAudio();
+        isSfxMuted = !isSfxMuted;
+        toggleSfxBtn.innerText = isSfxMuted ? '🔇 SFX' : '🔊 SFX';
+        toggleSfxBtn.classList.toggle('muted', isSfxMuted);
+    });
+
+    clearSaveBtn.addEventListener('click', () => {
+        if(confirm("Reset all game data?")) {
+            localStorage.removeItem('honeybee_clicker_save');
+            window.location.reload();
+        }
+    });
+
+    setInterval(() => {
+        if (droneCount > 0 && !isGamePaused) {
+            let passiveGain = (droneCount * 20) / 10;
+            honey += passiveGain;
+            checkFireworkMilestone(passiveGain);
+            updateUI();
+        }
+    }, 100);
+
+    setInterval(() => {
+        if (!isGamePaused) saveProgress();
+    }, 10000);
+
+    loadProgress();
+    updateUI();
+});
