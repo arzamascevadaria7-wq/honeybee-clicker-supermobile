@@ -245,18 +245,35 @@ function getCurrentFireworkGoal() {
     return 10000 + (milestoneTiers * 10000);
 }
 
+function checkFireworkMilestone(pointsToAdd) {
 let currentGoal = getCurrentFireworkGoal();
+let previousScore = cumulativeClickScore;
+cumulativeClickScore += pointsToAdd;if (Math.floor(cumulativeClickScore / currentGoal) > Math.floor(previousScore / currentGoal)) {
+const rect = beeButton.getBoundingClientRect();
+triggerHoneyFireworks(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}let currentMilestoneLevel = Math.floor(honey / 50000);
+if (currentMilestoneLevel > lastMilestoneReached) {
+lastMilestoneReached = currentMilestoneLevel;
+triggerHoneyRainEvent();
+}
+}function updateUI() {
+honeyCountEl.innerText = Math.floor(honey);
+hpsCountEl.innerText = isGamePaused ? 0 : droneCount * 20;clickPowerCostEl.innerText = clickPowerCost;
+royalJellyCostEl.innerText = royalJellyCost;
+droneCostEl.innerText = droneCost;buyClickPowerBtn.disabled = isGamePaused || honey < clickPowerCost;
+buyRoyalJellyBtn.disabled = isGamePaused || honey < royalJellyCost;
+buyDroneBtn.disabled = isGamePaused || honey < droneCost;let currentGoal = getCurrentFireworkGoal();
 let remaining = currentGoal - (cumulativeClickScore % currentGoal);
 milestoneCounterEl.innerText = 'Next Honey Fireworks in: ' + remaining.toLocaleString() + ' points';
-}// FIXED: Perfectly safe index-wrapped mobile touch parser compatible with GitHub hosting
+}// FIXED: Correct touch point array index extraction [0] to stop Safari from crashing
 function handleBeeClick(e) {
 if (isGamePaused) return;if (e.cancelable) e.preventDefault();
 initAudio();
 honey += clickPower;
 checkFireworkMilestone(clickPower);
 playClickSound();let clickX, clickY;
-// FIXED: Safely targeted index [0] to extract accurate finger touch positions
 if (e.changedTouches && e.changedTouches.length > 0) {
+// FIXED: Explicitly extracted coordinates from index [0] touch layer
 clickX = e.changedTouches[0].clientX;
 clickY = e.changedTouches[0].clientY;
 } else {
