@@ -1,0 +1,16 @@
+{
+  "name": "Honeybee Clicker",
+  "short_name": "BeeClicker",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#7ec0ee",
+  "theme_color": "#ffcc00",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

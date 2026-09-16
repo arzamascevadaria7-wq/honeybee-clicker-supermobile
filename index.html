@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Honeybee Clicker</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- PWA Web App Meta Hooks -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+</head>
+<body>
+    <div id="game-container">
+        <!-- Compact Mobile Top Header Control Panel -->
+        <div id="mobile-header">
+            <button id="toggle-pause" class="control-btn">⏸️ Pause</button>
+            <button id="toggle-music" class="control-btn">🎵 Music</button>
+            <button id="toggle-sfx" class="control-btn">🔊 SFX</button>
+        </div>
+
+        <!-- Sky Backdrop & Clouds -->
+        <div class="sky" id="sky-canvas">
+            <div class="cloud cloud-1"></div>
+            <div class="cloud cloud-2"></div>
+            <div class="cloud cloud-3"></div>
+            <div class="cloud cloud-4"></div>
+        </div>
+
+        <!-- Adaptive Mobile Dashboard -->
+        <div id="dashboard">
+            <h1 class="main-title">HONEYBEE CLICKER</h1>
+            <div class="stat-row">
+                <div class="stat-box">
+                    <span class="stat-label">Honey:</span>
+                    <span id="honey-count">0</span> 🍯
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">HPS:</span>
+                    <span id="hps-count">0</span>
+                </div>
+            </div>
+            <div id="milestone-counter">Next Honey Fireworks in: 10,000 points</div>
+            <div id="save-notification">Progress Saved!</div>
+        </div>
+
+        <!-- Native Touch-Responsive Active Bee Container -->
+        <div id="bee-wrapper">
+            <div id="bee-button" role="button" aria-label="Click the Bee">
+                <svg viewBox="0 0 140 140" class="bee-svg">
+                    <defs>
+                        <linearGradient id="beeGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#fffbbd" />
+                            <stop offset="45%" stop-color="#ffcc00" />
+                            <stop offset="100%" stop-color="#f29100" />
+                        </linearGradient>
+                        <linearGradient id="wingGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="rgba(255, 255, 255, 0.96)" />
+                            <stop offset="100%" stop-color="rgba(195, 238, 255, 0.65)" />
+                        </linearGradient>
+                    </defs>
+                    <g class="wing wing-back">
+                        <ellipse cx="44" cy="38" rx="16" ry="25" fill="url(#wingGrad)" stroke="#3e2723" stroke-width="2.5" />
+                        <path d="M 44 13 Q 47 24 44 38" stroke="rgba(255,255,255,0.7)" stroke-width="1.5" fill="none" />
+                    </g>
+                    <polygon points="22,72 11,70 22,68" fill="#2d1710" stroke="#3e2723" stroke-width="1.5" />
+                    <ellipse cx="70" cy="70" rx="42" ry="34" fill="url(#beeGold)" stroke="#3e2723" stroke-width="2.5" />
+                    <path d="M 44 43 A 42 34 0 0 0 44 97" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                    <path d="M 64 37 A 42 34 0 0 0 64 103" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                    <path d="M 84 40 A 42 34 0 0 0 84 100" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                    <ellipse cx="98" cy="62" rx="9" ry="12" fill="#2b1611" stroke="#3e2723" stroke-width="0.5" />
+                    <ellipse cx="99" cy="62" rx="7.5" ry="10.5" fill="#120603" />
+                    <circle cx="96.5" cy="57" r="3.2" fill="#ffffff" />
+                    <circle cx="101.5" cy="66" r="1.4" fill="#ffffff" />
+                    <circle cx="97.5" cy="65" r="0.8" fill="#ffffff" />
+                    <circle cx="90" cy="75" r="6" fill="#ff6688" opacity="0.65" />
+                    <path d="M 98 73 Q 101 76 104 72" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                    <path d="M 88 37 Q 94 23 104 21" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                    <circle cx="104" cy="21" r="2.5" fill="#2b1611" />
+                    <g class="wing wing-front">
+                        <ellipse cx="56" cy="30" rx="18" ry="30" fill="url(#wingGrad)" stroke="#3e2723" stroke-width="2.5" />
+                        <path d="M 56 0 C 62 12 54 24 56 30" stroke="rgba(255,255,255,0.75)" stroke-width="1.5" fill="none" />
+                        <path d="M 48 15 Q 58 19 60 30" stroke="rgba(255,255,255,0.4)" stroke-width="1.2" fill="none" />
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Thumb-Optimized Vertical Mobile Store Layout -->
+        <div id="shop-container">
+            <h2>BEEHIVE SHOP</h2>
+            <div class="shop-grid">
+                <button id="buy-click-power" class="shop-item">
+                    <div class="item-info">
+                        <span class="item-title">Sweet Nectar (+3)</span>
+                        <span class="item-desc">Click power +3</span>
+                    </div>
+                    <div class="item-cost"><span id="click-power-cost">10</span> 🍯</div>
+                </button>
+
+                <button id="buy-royal-jelly" class="shop-item">
+                    <div class="item-info">
+                        <span class="item-title">Royal Jelly (+10)</span>
+                        <span class="item-desc">Click power +10</span>
+                    </div>
+                    <div class="item-cost"><span id="royal-jelly-cost">150</span> 🍯</div>
+                </button>
+
+                <button id="buy-drone" class="shop-item">
+                    <div class="item-info">
+                        <span class="item-title">Worker Drone (+20)</span>
+                        <span class="item-desc">Gathers passive points</span>
+                    </div>
+                    <div class="item-cost"><span id="drone-cost">450</span> 🍯</div>
+                </button>
+            </div>
+            <button id="clear-save-btn">RESET GAME PROGRESS</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

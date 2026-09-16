@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Honeybee Clicker App Icon</title>
+    <style>
+        body {
+            background-color: #222;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        /* Квадратный контейнер иконки 512х512 с закруглением краев, как на iPhone */
+        .app-icon {
+            width: 512px;
+            height: 512px;
+            border-radius: 112px;
+            background: linear-gradient(to bottom, #4a90e2 0%, #7ec0ee 100%);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        /* Встроенный SVG-код вашей оригинальной пчелки, увеличенный под размеры иконки */
+        .bee-svg-container {
+            width: 130%;
+            height: 130%;
+            position: absolute;
+            top: -10%;
+            left: -12%;
+        }
+        /* Задний фон с плоскими облачками */
+        .deco-cloud {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 50%;
+        }
+        .c1 { width: 90px; height: 90px; top: 290px; left: 355px; }
+        .c2 { width: 70px; height: 70px; top: 310px; left: 330px; }
+        .c3 { width: 60px; height: 60px; top: 315px; left: 405px; }
+    </style>
+</head>
+<body>
+
+    <div class="app-icon">
+        <!-- Облачка на фоне -->
+        <div class="deco-cloud c1"></div>
+        <div class="deco-cloud c2"></div>
+        <div class="deco-cloud c3"></div>
+
+        <!-- Наша любимая пчелка со всеми правильными полосками и обводкой 2.5 -->
+        <div class="bee-svg-container">
+            <svg viewBox="0 0 140 140" width="100%" height="100%">
+                <!-- Заднее крыло -->
+                <g>
+                    <ellipse cx="44" cy="38" rx="16" ry="25" fill="#ffffff" stroke="#3e2723" stroke-width="2.5" />
+                    <path d="M 44 13 Q 47 24 44 38" stroke="#3e2723" stroke-width="1" fill="none" />
+                </g>
+                
+                <!-- Жало -->
+                <polygon points="22,72 11,70 22,68" fill="#2d1710" stroke="#3e2723" stroke-width="1.5" />
+                
+                <!-- Вытянутое тело -->
+                <ellipse cx="70" cy="70" rx="42" ry="34" fill="url(#bodyGold)" stroke="#3e2723" stroke-width="2.5" />
+                
+                <!-- Три оригинальные полоски -->
+                <path d="M 44 43 A 42 34 0 0 0 44 97" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M 64 37 A 42 34 0 0 0 64 103" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                <path d="M 84 40 A 42 34 0 0 0 84 100" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                
+                <!-- Аниме-глаз -->
+                <ellipse cx="98" cy="62" rx="9" ry="12" fill="#2b1611" stroke="#3e2723" stroke-width="0.5" />
+                <ellipse cx="99" cy="62" rx="7.5" ry="10.5" fill="#120603" />
+                <circle cx="96.5" cy="57" r="3.2" fill="#ffffff" />
+                <circle cx="101.5" cy="66" r="1.4" fill="#ffffff" />
+                <circle cx="97.5" cy="65" r="0.8" fill="#ffffff" />
+                
+                <!-- Щечки -->
+                <circle cx="90" cy="75" r="6" fill="#ff6688" opacity="0.65" />
+                
+                <!-- Улыбка -->
+                <path d="M 98 73 Q 101 76 104 72" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                
+                <!-- Усики -->
+                <path d="M 88 37 Q 94 23 104 21" fill="none" stroke="#3e2723" stroke-width="2.5" stroke-linecap="round" />
+                <circle cx="104" cy="21" r="2.5" fill="#2b1611" />
+                
+                <!-- Переднее крыло -->
+                <g>
+                    <ellipse cx="56" cy="30" rx="18" ry="30" fill="#ffffff" stroke="#3e2723" stroke-width="2.5" />
+                    <path d="M 56 0 C 62 12 54 24 56 30" stroke="#3e2723" stroke-width="1" fill="none" />
+                </g>
+
+                <defs>
+                    <linearGradient id="bodyGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stop-color="#fffbbd" />
+                        <stop offset="45%" stop-color="#ffcc00" />
+                        <stop offset="100%" stop-color="#f29100" />
+                    </linearGradient>
+                </defs>
+            </svg>
+        </div>
+    </div>
+
+</body>
+</html>
